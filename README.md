@@ -12,8 +12,4 @@ And here's why:
 - The `main.go` file contains all logic of the application, it would improve readability if the `sqlite` and `command` related code had their own Go files.
 - The code lacks any form of documentation, which makes it harder for others to understand the code.
 
-<details>
-    <summary>Spoiler</summary>
-
-    But it works ;)
-</details>
+> *But it works ;)*

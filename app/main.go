@@ -79,7 +79,7 @@ func delete_movie(db *sql.DB, id *string) {
 func main() {
 	arguments := os.Args[1:]
 
-	db, err := sql.Open("sqlite3", "./data/movies.db")
+	db, err := sql.Open("sqlite3", "./movies.db")
 	checkError(err)
 	defer db.Close()
 

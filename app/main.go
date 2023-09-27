@@ -33,7 +33,7 @@ func main() {
 	arguments := os.Args[1:]
 	if len(arguments) > 0 {
 		HandleCommand(database, arguments)
+	} else {
+		startAPI(database)
 	}
-
-	startAPI(database)
 }

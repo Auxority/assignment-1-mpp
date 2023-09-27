@@ -11,7 +11,7 @@ And here's why:
 - The API router contains database logic.
 - The API uses separate query methods from the `QueryDatabase` method because my `QueryDatabase` function does not return anything right now. I should use interfaces to allow this method to return anything I specify.
 - All methods that are accessed by other files start with a capital letter, following Go's best practices.
-- It's probably better to open the Sqlite connection when the `QueryDatabase` function is called, so queries can be run from anywhere. This would allow a refactor of the endpoint callback functions.
+- It's probably better to open the Sqlite connection when the `QueryDatabase` function is called, so queries can be run from anywhere. This would allow a refactor of the endpoint callback functions and this might fix the issue in CodeGrade, since the API would start immediately after the container starts instead of waiting for the database to be read.
 - And I should split the handlers of the API up into multiple files. Instead of one `movies_router.go` file. Because this will make it easier to adjust such endpoints in the future and prevent one huge file if more endpoints have to be added. 
 - I still haven't written any documentation, except for a few methods that shouldn't be there after another refactoring round. So it might still be difficult for other devs to understand my code.
 

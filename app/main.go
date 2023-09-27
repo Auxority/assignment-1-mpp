@@ -30,10 +30,10 @@ func main() {
 	database := OpenMoviesDatabase()
 	defer CloseMoviesDatabase(database)
 
-	startAPI(database)
-
 	arguments := os.Args[1:]
 	if len(arguments) > 0 {
 		HandleCommand(database, arguments)
 	}
+
+	startAPI(database)
 }

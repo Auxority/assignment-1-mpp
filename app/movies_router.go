@@ -62,7 +62,7 @@ func movieDetailsEndpoint(router *gin.Engine, database *sql.DB) {
 		if movie.IMDbId != nil {
 			context.IndentedJSON(http.StatusOK, &movie)
 		} else {
-			context.Status(404)
+			context.Status(http.StatusNotFound)
 		}
 	})
 }
@@ -71,7 +71,7 @@ func movieDeleteEndpoint(router *gin.Engine, database *sql.DB) {
 	router.DELETE("/movies/:id", func(context *gin.Context) {
 		id := context.Param("id")
 		DeleteMovie(database, &id)
-		context.Status(http.StatusOK)
+		context.Status(http.StatusNoContent)
 	})
 }
 

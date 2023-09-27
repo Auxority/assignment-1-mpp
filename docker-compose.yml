@@ -5,7 +5,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    env_file:
+      - ./docker/mpp/.env
     ports:
-      - 8080:8080
+      - "8090:8090"
     volumes:
       - ./app:/app

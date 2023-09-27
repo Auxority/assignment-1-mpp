@@ -20,6 +20,11 @@ stop: ## Stop the docker image
 	@printf "\033[32mStopping docker image...\033[0m\n"
 	@docker compose stop
 
+.PHONY: restart
+restart: ## Restart the docker image
+	@printf "\033[32mRestarting docker image...\033[0m\n"
+	@docker compose restart
+
 .PHONY: clean
 clean: ## Clean the docker image
 	@printf "\033[32mCleaning docker image...\033[0m\n"
@@ -33,4 +38,30 @@ sh: ## Run a shell in the docker image
 .PHONY: logs
 logs: ## Show the logs of the docker image
 	@printf "\033[32mShowing logs of docker image...\033[0m\n"
-	@docker compose logs -f app
+	@docker compose logs -f app --tail 5
+
+.PHONY: test
+test: ## Test all the commands
+	@printf "\033[32mRunning list command...\033[0m\n"
+	@docker compose exec app ./bin/main list
+
+	@printf "\033[32mRunning add command...\033[0m\n"
+	@docker compose exec app ./bin/main add -imdbid tt0000001 -title Carmencita -year 1894 -rating 5.7
+
+	@printf "\033[32mRunning details command...\033[0m\n"
+	@docker compose exec app ./bin/main details -imdbid tt0000001
+
+	@printf "\033[32mRunning delete command...\033[0m\n"
+	@docker compose exec app ./bin/main delete -imdbid tt0000001
+
+	@printf "\033[32mRunning API list endpoint...\033[0m\n"
+	@docker compose exec app wget -qO- localhost:8090/movies
+
+	@printf "\033[32mRunning API details endpoint...\033[0m\n"
+	@docker compose exec app wget -qO- localhost:8090/movies/tt0111161
+
+	@printf "\033[32mRunning API add endpoint...\033[0m\n"
+	@docker compose exec app curl -X POST -H "Content-Type: application/json" -d '{"imdb_id": "tt0368226", "title": "The Room", "rating": 3.7, "year": 2003}' localhost:8090/movies
+
+	@printf "\033[32mRunning API delete endpoint...\033[0m\n"
+	@docker compose exec app curl -X DELETE localhost:8090/movies/tt0000001

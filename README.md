@@ -1,15 +1,18 @@
-# Mission Impossible - Opinion on Code Quality
+# Dirty Harry - Opinion on Code Quality
 
-In my opinion the code quality of this project is bad.
+In my opinion the code quality of this project is quite a bit better than during the last assignment, but it is still far from "perfect".
 
 And here's why:
-- The functions and variable names might be clear, but there's still room for improvement.
-- There's a lot of code duplication in the project.
-- The main function has way too many responsibilities, and should be refactored into multiple smaller methods.
-- The code inside the `rows.Next()` for loops should be refactored into functions, to improve readability.
-- Errors are printed when they occur, but not handled in any other way. This could be improved by creating custom error messages for the end user.
-- The switch statement works for now, but is not built for expandability. If the project would need 200 commands, the switch statement would look like a huge mess.
-- The `main.go` file contains all logic of the application, it would improve readability if the `sqlite` and `command` related code had their own Go files.
-- The code lacks any form of documentation, which makes it harder for others to understand the code.
+- Most errors are still generic, since I did not spend the time to fix this.
+- Variable names, and the command handler have been improved.
+- The `main.go` file has been split up into components to improve readability.
+- All the separate files are still stored in one directory, since [Codegrade](https://app.codegra.de/) does not allow folders containing Go code to be uploaded.
+- Not all endpoints use commands yet. Most commands must be rewritten to achieve this.
+- The API router contains database logic.
+- The API uses separate query methods from the `QueryDatabase` method because my `QueryDatabase` function does not return anything right now. I should use interfaces to allow this method to return anything I specify.
+- All methods that are accessed by other files start with a capital letter, following Go's best practices.
+- It's probably better to open the Sqlite connection when the `QueryDatabase` function is called, so queries can be run from anywhere. This would allow a refactor of the endpoint callback functions.
+- And I should split the handlers of the API up into multiple files. Instead of one `movies_router.go` file. Because this will make it easier to adjust such endpoints in the future and prevent one huge file if more endpoints have to be added. 
+- I still haven't written any documentation, except for a few methods that shouldn't be there after another refactoring round. So it might still be difficult for other devs to understand my code.
 
-> *But it works ;)*
+> *But it still works ;)*

@@ -28,9 +28,10 @@ func startAPI() {
 func main() {
 	arguments := os.Args[1:]
 
-	if len(arguments) == 0 {
-		startAPI()
-	} else {
+	if len(arguments) > 0 {
 		HandleCommand(arguments)
+		return
 	}
+
+	startAPI()
 }

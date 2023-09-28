@@ -73,8 +73,6 @@ test: ## Test all the commands
 
 	@printf "\033[32mRestoring database...\033[0m\n"
 	@docker compose exec mpp cp /app/movies.db.bak /app/movies.db
-
-	@printf "\033[32mRemoving backup database...\033[0m\n"
 	@docker compose exec mpp rm /app/movies.db.bak
 
 	@printf "\033[32mDone!\033[0m\n"

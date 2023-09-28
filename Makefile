@@ -42,26 +42,39 @@ logs: ## Show the logs of the docker image
 
 .PHONY: test
 test: ## Test all the commands
+	@printf "\033[32mTesting the Go application...\033[0m\n"
+
+	@printf "\033[32mCreating temporary backup of database...\033[0m\n"
+	@docker compose exec mpp cp /app/movies.db /app/movies.db.bak
+
 	@printf "\033[32mRunning list command...\033[0m\n"
 	@docker compose exec mpp ./bin/main list
 
-	@printf "\033[32mRunning add command...\033[0m\n"
-	@docker compose exec mpp ./bin/main add -imdbid tt0000001 -title Carmencita -year 1894 -rating 5.7
-
 	@printf "\033[32mRunning details command...\033[0m\n"
-	@docker compose exec mpp ./bin/main details -imdbid tt0000001
+	@docker compose exec mpp ./bin/main details -imdbid tt0034583
+
+	@printf "\033[32mRunning add command...\033[0m\n"
+	@docker compose exec mpp ./bin/main add -imdbid tt10872600 -title "Spider-Man: No Way Home" -rating 8.3 -year 2021
 
 	@printf "\033[32mRunning delete command...\033[0m\n"
-	@docker compose exec mpp ./bin/main delete -imdbid tt0000001
+	@docker compose exec mpp ./bin/main delete -imdbid tt0058150
 
 	@printf "\033[32mRunning API list endpoint...\033[0m\n"
-	@docker compose exec mpp wget -qO- localhost:8090/movies
+	@docker compose exec mpp curl -i -s -X DELETE localhost:8090/movies/tt0058150 | head -n 1
 
 	@printf "\033[32mRunning API details endpoint...\033[0m\n"
-	@docker compose exec mpp wget -qO- localhost:8090/movies/tt0111161
+	@docker compose exec mpp curl -S -s localhost:8090/movies/tt0034583
 
 	@printf "\033[32mRunning API add endpoint...\033[0m\n"
 	@docker compose exec mpp curl -X POST -H "Content-Type: mpplication/json" -d '{"imdb_id": "tt0368226", "title": "The Room", "rating": 3.7, "year": 2003}' localhost:8090/movies
 
 	@printf "\033[32mRunning API delete endpoint...\033[0m\n"
-	@docker compose exec mpp curl -X DELETE localhost:8090/movies/tt0368226
+	@docker compose exec mpp curl -i -s localhost:8090/movies/non-existent | head -n 1
+
+	@printf "\033[32mRestoring database...\033[0m\n"
+	@docker compose exec mpp cp /app/movies.db.bak /app/movies.db
+
+	@printf "\033[32mRemoving backup database...\033[0m\n"
+	@docker compose exec mpp rm /app/movies.db.bak
+
+	@printf "\033[32mDone!\033[0m\n"

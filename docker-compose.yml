@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  app:
+  mpp:
     build:
       context: .
       dockerfile: Dockerfile.dev

@@ -27,13 +27,13 @@ func startAPI(database *sql.DB) {
 }
 
 func main() {
+	arguments := os.Args[1:]
 	database := OpenMoviesDatabase()
 	defer CloseMoviesDatabase(database)
 
-	arguments := os.Args[1:]
-	if len(arguments) > 0 {
-		HandleCommand(database, arguments)
-	} else {
+	if len(arguments) == 0 {
 		startAPI(database)
+	} else {
+		HandleCommand(database, arguments)
 	}
 }

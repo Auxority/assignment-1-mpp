@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 )
@@ -19,7 +18,6 @@ func createAddCommand() (*flag.FlagSet, *string, *string, *float64, *int) {
 }
 
 func AddMovie(
-	database *sql.DB,
 	movie *Movie,
 ) {
 	sql := fmt.Sprintf(`
@@ -27,17 +25,16 @@ func AddMovie(
 		VALUES ('%s', '%s', %.1f, %d);
 	`, *movie.IMDbId, *movie.Title, *movie.IMDbRating, *movie.ReleaseYear)
 
-	ExecDatabase(database, &sql)
+	ExecDatabase(&sql)
 }
 
 func AddMovieCommand(
-	database *sql.DB,
 	imdbId *string,
 	title *string,
 	imdbRating *float64,
 	releaseYear *int,
 ) {
 	movie := Movie{IMDbId: imdbId, Title: title, IMDbRating: imdbRating, ReleaseYear: releaseYear}
-	AddMovie(database, &movie)
-	ShowDetails(database, movie.IMDbId)
+	AddMovie(&movie)
+	ShowDetails(movie.IMDbId)
 }

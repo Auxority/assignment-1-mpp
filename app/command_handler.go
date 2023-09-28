@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 )
@@ -11,7 +10,7 @@ func parseArguments(command *flag.FlagSet, arguments *[]string) {
 	command.Parse(commandArguments)
 }
 
-func HandleCommand(database *sql.DB, arguments []string) error {
+func HandleCommand(arguments []string) error {
 	addCommand, addImdbId, addTitle, addImdbRating, addYear := createAddCommand()
 	detailsCommand, detailsImdbId := createDetailsCommand()
 	deleteCommand, deleteImdbId := createDeleteCommand()
@@ -19,15 +18,15 @@ func HandleCommand(database *sql.DB, arguments []string) error {
 	switch arguments[0] {
 	case "add":
 		parseArguments(addCommand, &arguments)
-		AddMovieCommand(database, addImdbId, addTitle, addImdbRating, addYear)
+		AddMovieCommand(addImdbId, addTitle, addImdbRating, addYear)
 	case "list":
-		ShowTitles(database)
+		ShowTitles()
 	case "details":
 		parseArguments(detailsCommand, &arguments)
-		ShowDetails(database, detailsImdbId)
+		ShowDetails(detailsImdbId)
 	case "delete":
 		parseArguments(deleteCommand, &arguments)
-		DeleteMovieCommand(database, deleteImdbId)
+		DeleteMovieCommand(deleteImdbId)
 	default:
 		return fmt.Errorf("unable to find the provided '%q' command", arguments[0])
 	}

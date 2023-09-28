@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 
@@ -18,22 +17,20 @@ func getAddress() string {
 	return fmt.Sprintf("%s:%d", hostname, port)
 }
 
-func startAPI(database *sql.DB) {
+func startAPI() {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-	AddApiEndpoints(router, database)
+	AddApiEndpoints(router)
 	address := getAddress()
 	router.Run(address)
 }
 
 func main() {
 	arguments := os.Args[1:]
-	database := OpenMoviesDatabase()
-	defer CloseMoviesDatabase(database)
 
 	if len(arguments) == 0 {
-		startAPI(database)
+		startAPI()
 	} else {
-		HandleCommand(database, arguments)
+		HandleCommand(arguments)
 	}
 }

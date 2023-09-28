@@ -10,7 +10,10 @@ func CloseMoviesDatabase(database *sql.DB) {
 	database.Close()
 }
 
-func ExecDatabase(database *sql.DB, sql *string) {
+func ExecDatabase(sql *string) {
+	database := OpenMoviesDatabase()
+	defer CloseMoviesDatabase(database)
+
 	_, err := database.Exec(*sql)
 	CheckError(err)
 }
@@ -20,7 +23,10 @@ func OpenMoviesDatabase() *sql.DB {
 	return openDatabase(&fileName)
 }
 
-func QueryDatabase(database *sql.DB, sql *string, nextRowFunc func(rows *sql.Rows)) {
+func QueryDatabase(sql *string, nextRowFunc func(rows *sql.Rows)) {
+	database := OpenMoviesDatabase()
+	defer CloseMoviesDatabase(database)
+
 	rows, err := database.Query(*sql)
 	CheckError(err)
 	defer closeRows(rows)

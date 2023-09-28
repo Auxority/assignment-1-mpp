@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"fmt"
 )
@@ -14,15 +13,15 @@ func createDeleteCommand() (*flag.FlagSet, *string) {
 	return command, imdbIdParameter
 }
 
-func DeleteMovie(database *sql.DB, id *string) {
+func DeleteMovie(id *string) {
 	sql := fmt.Sprintf(`
 		DELETE FROM movies
 		WHERE IMDb_id='%s';
 	`, *id)
-	ExecDatabase(database, &sql)
+	ExecDatabase(&sql)
 }
 
-func DeleteMovieCommand(database *sql.DB, id *string) {
-	DeleteMovie(database, id)
+func DeleteMovieCommand(id *string) {
+	DeleteMovie(id)
 	fmt.Println("Movie deleted")
 }

@@ -5,10 +5,10 @@ import (
 	"fmt"
 )
 
-func ShowTitles(database *sql.DB) {
+func ShowTitles() {
 	sql := "SELECT Title FROM movies;"
 
-	QueryDatabase(database, &sql, showTitleRow)
+	QueryDatabase(&sql, showTitleRow)
 }
 
 func showTitleRow(rows *sql.Rows) {

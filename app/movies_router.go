@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -10,7 +9,10 @@ import (
 
 // TODO: Find a better way that makes use of interfaces in the queryDatabase function to query the database.
 // Since this would prevent a lot of code duplication.
-func queryMovies(database *sql.DB, movies *[]*Movie) {
+func queryMovies(movies *[]*Movie) {
+	database := OpenMoviesDatabase()
+	defer CloseMoviesDatabase(database)
+
 	rows, err := database.Query("SELECT IMDb_id, Title, Rating, Year FROM movies;")
 	CheckError(err)
 	defer closeRows(rows)
@@ -26,7 +28,10 @@ func queryMovies(database *sql.DB, movies *[]*Movie) {
 
 // TODO: IDEM, ideally the commands would all return structs that are serialized to JSON.
 // But this requires a refactor, while I just want to get everything working for now.
-func queryMovie(database *sql.DB, id *string, movie *Movie) {
+func queryMovie(id *string) *Movie {
+	database := OpenMoviesDatabase()
+	defer CloseMoviesDatabase(database)
+
 	sql := fmt.Sprintf(`
 		SELECT IMDb_id, Title, Rating, Year
 		FROM movies
@@ -37,27 +42,29 @@ func queryMovie(database *sql.DB, id *string, movie *Movie) {
 	CheckError(err)
 	defer closeRows(rows)
 
+	var movie Movie
 	for rows.Next() {
 		rows.Scan(&movie.IMDbId, &movie.Title, &movie.IMDbRating, &movie.ReleaseYear)
 	}
 
 	defer rows.Close()
+
+	return &movie
 }
 
-func movieListEndpoint(router *gin.Engine, database *sql.DB) {
+func movieListEndpoint(router *gin.Engine) {
 	router.GET("/movies", func(context *gin.Context) {
 		var movies []*Movie
-		queryMovies(database, &movies)
+		queryMovies(&movies)
 
 		context.IndentedJSON(http.StatusOK, &movies)
 	})
 }
 
-func movieDetailsEndpoint(router *gin.Engine, database *sql.DB) {
+func movieDetailsEndpoint(router *gin.Engine) {
 	router.GET("/movies/:id", func(context *gin.Context) {
 		id := context.Param("id")
-		var movie Movie
-		queryMovie(database, &id, &movie)
+		movie := queryMovie(&id)
 
 		if movie.IMDbId != nil {
 			context.IndentedJSON(http.StatusOK, &movie)
@@ -67,15 +74,15 @@ func movieDetailsEndpoint(router *gin.Engine, database *sql.DB) {
 	})
 }
 
-func movieDeleteEndpoint(router *gin.Engine, database *sql.DB) {
+func movieDeleteEndpoint(router *gin.Engine) {
 	router.DELETE("/movies/:id", func(context *gin.Context) {
 		id := context.Param("id")
-		DeleteMovie(database, &id)
+		DeleteMovie(&id)
 		context.Status(http.StatusNoContent)
 	})
 }
 
-func movieAddEndpoint(router *gin.Engine, database *sql.DB) {
+func movieAddEndpoint(router *gin.Engine) {
 	router.POST("/movies", func(context *gin.Context) {
 		var movie Movie
 
@@ -83,15 +90,15 @@ func movieAddEndpoint(router *gin.Engine, database *sql.DB) {
 			return
 		}
 
-		AddMovie(database, &movie)
+		AddMovie(&movie)
 
 		context.IndentedJSON(http.StatusOK, &movie)
 	})
 }
 
-func AddApiEndpoints(router *gin.Engine, database *sql.DB) {
-	movieListEndpoint(router, database)
-	movieAddEndpoint(router, database)
-	movieDetailsEndpoint(router, database)
-	movieDeleteEndpoint(router, database)
+func AddApiEndpoints(router *gin.Engine) {
+	movieListEndpoint(router)
+	movieAddEndpoint(router)
+	movieDetailsEndpoint(router)
+	movieDeleteEndpoint(router)
 }

@@ -1,4 +1,4 @@
-# Dirty Harry - Opinion on Code Quality
+# Apollo 13 - Opinion on Code Quality
 
 In my opinion the code quality of this project is quite a bit better than during the last assignment, but it is still far from "perfect".
 

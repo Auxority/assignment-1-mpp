@@ -1,9 +1,12 @@
-package main
+package command
 
 import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"mpp/database"
+	"mpp/error_util"
+	"mpp/types"
 )
 
 func createDetailsCommand() (*flag.FlagSet, *string) {
@@ -21,7 +24,7 @@ func ShowDetails(id *string) {
 		WHERE IMDb_id='%s';
 	`, *id)
 
-	QueryDatabase(&sql, showDetailsRow)
+	database.QueryDatabase(&sql, showDetailsRow)
 }
 
 func showDetailsRow(rows *sql.Rows) {
@@ -29,9 +32,9 @@ func showDetailsRow(rows *sql.Rows) {
 	fmt.Printf("IMDb id: %s\nTitle: %s\nRating: %.1f\nYear: %d\n", *movie.IMDbId, *movie.Title, *movie.IMDbRating, *movie.ReleaseYear)
 }
 
-func getDetailsRow(rows *sql.Rows) *Movie {
-	var movie Movie
+func getDetailsRow(rows *sql.Rows) *types.Movie {
+	var movie types.Movie
 	err := rows.Scan(&movie.IMDbId, &movie.Title, &movie.IMDbRating, &movie.ReleaseYear)
-	CheckError(err)
+	error_util.CheckError(err)
 	return &movie
 }

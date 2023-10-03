@@ -1,8 +1,9 @@
-package main
+package command
 
 import (
 	"flag"
 	"fmt"
+	"mpp/database"
 )
 
 func createDeleteCommand() (*flag.FlagSet, *string) {
@@ -18,7 +19,7 @@ func DeleteMovie(id *string) {
 		DELETE FROM movies
 		WHERE IMDb_id='%s';
 	`, *id)
-	ExecDatabase(&sql)
+	database.ExecDatabase(&sql)
 }
 
 func DeleteMovieCommand(id *string) {

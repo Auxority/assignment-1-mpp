@@ -1,8 +1,10 @@
-package main
+package command
 
 import (
 	"flag"
 	"fmt"
+	"mpp/database"
+	"mpp/types"
 )
 
 func createAddCommand() (*flag.FlagSet, *string, *string, *float64, *int) {
@@ -18,14 +20,14 @@ func createAddCommand() (*flag.FlagSet, *string, *string, *float64, *int) {
 }
 
 func AddMovie(
-	movie *Movie,
+	movie *types.Movie,
 ) {
 	sql := fmt.Sprintf(`
 		INSERT INTO movies (IMDb_id, Title, Rating, Year)
 		VALUES ('%s', '%s', %.1f, %d);
 	`, *movie.IMDbId, *movie.Title, *movie.IMDbRating, *movie.ReleaseYear)
 
-	ExecDatabase(&sql)
+	database.ExecDatabase(&sql)
 }
 
 func AddMovieCommand(
@@ -34,7 +36,7 @@ func AddMovieCommand(
 	imdbRating *float64,
 	releaseYear *int,
 ) {
-	movie := Movie{IMDbId: imdbId, Title: title, IMDbRating: imdbRating, ReleaseYear: releaseYear}
+	movie := types.Movie{IMDbId: imdbId, Title: title, IMDbRating: imdbRating, ReleaseYear: releaseYear}
 	AddMovie(&movie)
 	ShowDetails(movie.IMDbId)
 }

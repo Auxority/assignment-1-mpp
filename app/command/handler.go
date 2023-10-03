@@ -1,4 +1,4 @@
-package main
+package command
 
 import (
 	"flag"
@@ -27,6 +27,9 @@ func HandleCommand(arguments []string) error {
 	case "delete":
 		parseArguments(deleteCommand, &arguments)
 		DeleteMovieCommand(deleteImdbId)
+	case "summaries":
+		fmt.Println("aaaa")
+		PrintMovieSummaries()
 	default:
 		return fmt.Errorf("unable to find the provided '%q' command", arguments[0])
 	}

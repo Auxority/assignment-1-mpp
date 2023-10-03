@@ -1,7 +1,8 @@
-package main
+package database
 
 import (
 	"database/sql"
+	"mpp/error_util"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -15,7 +16,7 @@ func ExecDatabase(sql *string) {
 	defer CloseMoviesDatabase(database)
 
 	_, err := database.Exec(*sql)
-	CheckError(err)
+	error_util.CheckError(err)
 }
 
 func OpenMoviesDatabase() *sql.DB {
@@ -28,8 +29,8 @@ func QueryDatabase(sql *string, nextRowFunc func(rows *sql.Rows)) {
 	defer CloseMoviesDatabase(database)
 
 	rows, err := database.Query(*sql)
-	CheckError(err)
-	defer closeRows(rows)
+	error_util.CheckError(err)
+	defer CloseRows(rows)
 
 	for rows.Next() {
 		nextRowFunc(rows)
@@ -41,10 +42,11 @@ func QueryDatabase(sql *string, nextRowFunc func(rows *sql.Rows)) {
 func openDatabase(fileName *string) *sql.DB {
 	driverName := "sqlite3"
 	database, err := sql.Open(driverName, *fileName)
-	CheckError(err)
+	error_util.CheckError(err)
 	return database
 }
 
-func closeRows(rows *sql.Rows) {
+// TODO: Make private method
+func CloseRows(rows *sql.Rows) {
 	rows.Close()
 }

@@ -1,4 +1,4 @@
-package main
+package types
 
 type Movie struct {
 	IMDbId      *string  `json:"imdb_id"`

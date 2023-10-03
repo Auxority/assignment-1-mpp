@@ -11,3 +11,8 @@ services:
       - "8090:8090"
     volumes:
       - ./app:/app
+    networks:
+      - development
+
+networks:
+  development:

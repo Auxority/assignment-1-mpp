@@ -1,31 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"mpp/command"
-
-	"github.com/gin-gonic/gin"
+	"mpp/router"
 )
-
-func getAddress() string {
-	port := 8090
-	hostname := os.Getenv("API_HOST")
-	if hostname == "" {
-		hostname = "localhost"
-	}
-
-	return fmt.Sprintf("%s:%d", hostname, port)
-}
-
-func startAPI() {
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
-	AddApiEndpoints(router)
-	address := getAddress()
-	router.Run(address)
-}
 
 func main() {
 	arguments := os.Args[1:]
@@ -35,5 +15,5 @@ func main() {
 		return
 	}
 
-	startAPI()
+	router.StartAPI()
 }

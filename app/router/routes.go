@@ -12,10 +12,14 @@ const MOVIE_ENDPOINT string = "/movies/:id"
 func StartAPI() {
 	address := getAddress()
 
-	addEndpoint(MOVIES_ENDPOINT, moviesHandler)
-	addEndpoint(MOVIE_ENDPOINT, movieHandler)
+	registerRoutes()
 
 	http.ListenAndServe(address, nil)
+}
+
+func registerRoutes() {
+	addEndpoint(MOVIES_ENDPOINT, moviesHandler)
+	addEndpoint(MOVIE_ENDPOINT, movieHandler)
 }
 
 func moviesHandler(w http.ResponseWriter, request *http.Request) {

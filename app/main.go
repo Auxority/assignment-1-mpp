@@ -5,14 +5,12 @@ import (
 	"os"
 
 	"mpp/command"
-	"mpp/database"
 
 	"github.com/gin-gonic/gin"
 )
 
 func getAddress() string {
 	port := 8090
-	database.QueryDatabase()
 	hostname := os.Getenv("API_HOST")
 	if hostname == "" {
 		hostname = "localhost"
@@ -37,5 +35,5 @@ func main() {
 		return
 	}
 
-	go startAPI()
+	startAPI()
 }

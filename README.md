@@ -5,8 +5,8 @@ In my opinion the code quality of this project is quite a bit better than during
 And here's why:
 - Most errors are still generic, since I did not spend the time to fix this.
 - Variable names, and the command handler have been improved.
-- The `main.go` file has been split up into components to improve readability.
-- All the separate files are still stored in one directory, since [Codegrade](https://app.codegra.de/) does not allow folders containing Go code to be uploaded.
+<!-- - The `main.go` file has been split up into components to improve readability. -->
+<!-- - All the separate files are still stored in one directory, since [Codegrade](https://app.codegra.de/) does not allow folders containing Go code to be uploaded. -->
 - Not all endpoints use commands yet. Most commands must be rewritten to achieve this.
 - The API router contains database logic.
 - The API uses separate query methods from the `QueryDatabase` method because my `QueryDatabase` function does not return anything right now. I should use interfaces to allow this method to return anything I specify.

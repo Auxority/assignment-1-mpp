@@ -30,7 +30,7 @@ func QueryDatabase(sql *string, nextRowFunc func(rows *sql.Rows)) {
 
 	rows, err := database.Query(*sql)
 	error_util.CheckError(err)
-	defer CloseRows(rows)
+	defer closeRows(rows)
 
 	for rows.Next() {
 		nextRowFunc(rows)
@@ -47,6 +47,6 @@ func openDatabase(fileName *string) *sql.DB {
 }
 
 // TODO: Make private method
-func CloseRows(rows *sql.Rows) {
+func closeRows(rows *sql.Rows) {
 	rows.Close()
 }

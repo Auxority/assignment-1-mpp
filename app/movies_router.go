@@ -19,7 +19,7 @@ func queryMovies(movies *[]*types.Movie) {
 
 	rows, err := moviesDatabase.Query("SELECT IMDb_id, Title, Rating, Year FROM movies;")
 	error_util.CheckError(err)
-	defer database.CloseRows(rows)
+	defer rows.Close()
 
 	for rows.Next() {
 		var movie types.Movie
@@ -44,7 +44,7 @@ func queryMovie(id *string) *types.Movie {
 
 	rows, err := moviesDatabase.Query(sql)
 	error_util.CheckError(err)
-	defer database.CloseRows(rows)
+	defer rows.Close()
 
 	var movie types.Movie
 	for rows.Next() {

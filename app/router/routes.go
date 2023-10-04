@@ -4,54 +4,27 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-)
 
-const MOVIES_ENDPOINT string = "/movies"
-const MOVIE_ENDPOINT string = "/movies/:id"
+	"github.com/gorilla/mux"
+)
 
 func StartAPI() {
 	address := getAddress()
-
 	registerRoutes()
-
 	http.ListenAndServe(address, nil)
 }
 
 func registerRoutes() {
-	addEndpoint(MOVIES_ENDPOINT, moviesHandler)
-	addEndpoint(MOVIE_ENDPOINT, movieHandler)
-}
+	const MOVIES_ENDPOINT string = "/movies"
+	const MOVIE_ENDPOINT string = "/movies/{id:tt[0-9]+}"
 
-func moviesHandler(w http.ResponseWriter, request *http.Request) {
-	writer := &w
-	switch request.Method {
-	case http.MethodGet:
-		OnMovieListRequest(writer, request)
-	case http.MethodPost:
-		OnMovieAddRequest(writer, request)
-	default:
-		methodNotAllowed(writer)
-	}
-}
+	router := mux.NewRouter()
+	router.HandleFunc(MOVIES_ENDPOINT, ListMovies).Methods(http.MethodGet)
+	router.HandleFunc(MOVIE_ENDPOINT, MovieDetails).Methods(http.MethodGet)
+	router.HandleFunc(MOVIES_ENDPOINT, AddMovie).Methods(http.MethodPost)
+	router.HandleFunc(MOVIE_ENDPOINT, DeleteMovie).Methods(http.MethodDelete)
 
-func movieHandler(w http.ResponseWriter, request *http.Request) {
-	writer := &w
-	switch request.Method {
-	case http.MethodGet:
-		OnMovieDetailsRequest(writer, request)
-	case http.MethodDelete:
-		OnMovieDeleteRequest(writer, request)
-	default:
-		methodNotAllowed(writer)
-	}
-}
-
-func addEndpoint(endpoint string, handler func(http.ResponseWriter, *http.Request)) {
-	http.HandleFunc(endpoint, handler)
-}
-
-func methodNotAllowed(writer *http.ResponseWriter) {
-	(*writer).WriteHeader(http.StatusMethodNotAllowed)
+	http.Handle("/", router)
 }
 
 func getAddress() string {

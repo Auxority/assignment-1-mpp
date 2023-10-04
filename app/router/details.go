@@ -1,16 +1,31 @@
 package router
 
-import "net/http"
+import (
+	"fmt"
+	"mpp/command"
+	"mpp/omdb"
+	"net/http"
+)
 
-func OnMovieDetailsRequest(writer *http.ResponseWriter, request *http.Request) {
-	(*writer).Write([]byte("SHOW ME DA DETAILS"))
+func MovieDetails(writer http.ResponseWriter, request *http.Request) {
+	id := GetUrlId(request)
+	err := writeMovieDetailsResponse(id, writer)
+	if err != nil {
+		fmt.Printf("Could not find movie! - %s\n", err.Error())
+		writer.WriteHeader(http.StatusNotFound)
+	}
+}
 
-	// id := context.Param("id")
-	// movie := queryMovie(&id)
+func writeMovieDetailsResponse(id string, writer http.ResponseWriter) error {
+	movie, err := command.GetMovieDetails(&id)
+	if err != nil {
+		return fmt.Errorf("writeMovieDetailsResponse: %w", err)
+	}
 
-	// if movie.IMDbId != nil {
-	// 	context.IndentedJSON(http.StatusOK, &movie)
-	// } else {
-	// 	context.Status(http.StatusNotFound)
-	// }
+	err = omdb.WriteJSONResponse(writer, movie)
+	if err != nil {
+		return fmt.Errorf("writeMovieDetailsResponse: %w", err)
+	}
+
+	return nil
 }

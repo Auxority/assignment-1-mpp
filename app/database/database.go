@@ -2,51 +2,65 @@ package database
 
 import (
 	"database/sql"
-	"mpp/error_util"
+	"fmt"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func CloseMoviesDatabase(database *sql.DB) {
-	database.Close()
+const DRIVER_NAME string = "sqlite3"
+const DB_FILE_NAME string = "./movies.db"
+
+func OpenDatabase() (*sql.DB, error) {
+	database, err := sql.Open(DRIVER_NAME, DB_FILE_NAME)
+	if err != nil {
+		return nil, fmt.Errorf("InitDatabase: failed to open database connection: %w", err)
+	}
+	return database, nil
 }
 
-func ExecDatabase(sql *string) {
-	database := OpenMoviesDatabase()
-	defer CloseMoviesDatabase(database)
-
-	_, err := database.Exec(*sql)
-	error_util.CheckError(err)
-}
-
-func OpenMoviesDatabase() *sql.DB {
-	fileName := "./movies.db"
-	return openDatabase(&fileName)
-}
-
-func QueryDatabase(sql *string, nextRowFunc func(rows *sql.Rows)) {
-	database := OpenMoviesDatabase()
-	defer CloseMoviesDatabase(database)
-
-	rows, err := database.Query(*sql)
-	error_util.CheckError(err)
-	defer closeRows(rows)
-
-	for rows.Next() {
-		nextRowFunc(rows)
+func ExecDatabase(sql *string, args ...any) error {
+	database, err := OpenDatabase()
+	if err != nil {
+		return fmt.Errorf("ExecDatabase: %w", err)
 	}
 
+	defer database.Close()
+
+	_, err = database.Exec(*sql, args...)
+	if err != nil {
+		return fmt.Errorf("ExecDatabase: failed to execute SQL: %w", err)
+	}
+
+	return nil
+}
+
+func QueryDatabase(sql *string, nextRowFunc func(rows *sql.Rows) (any, error), args ...any) ([]*any, error) {
+	database, err := OpenDatabase()
+	if err != nil {
+		return nil, fmt.Errorf("QueryDatabase: %w", err)
+	}
+	defer database.Close()
+
+	rows, err := database.Query(*sql, args...)
+	if err != nil {
+		fmt.Println(*sql)
+		fmt.Println(args...)
+		return nil, fmt.Errorf("QueryDatabase: failed to query database: %w", err)
+	}
 	defer rows.Close()
-}
 
-func openDatabase(fileName *string) *sql.DB {
-	driverName := "sqlite3"
-	database, err := sql.Open(driverName, *fileName)
-	error_util.CheckError(err)
-	return database
-}
+	var results []*any
+	for rows.Next() {
+		result, err := nextRowFunc(rows)
+		if err != nil {
+			return nil, fmt.Errorf("QueryDatabase: failed to run next row function: %w", err)
+		}
+		results = append(results, &result)
+	}
 
-// TODO: Make private method
-func closeRows(rows *sql.Rows) {
-	rows.Close()
+	if len(results) == 0 {
+		return nil, fmt.Errorf("QueryDatabase: no results found")
+	}
+
+	return results, nil
 }

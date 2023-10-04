@@ -1,11 +1,21 @@
 package router
 
-import "net/http"
+import (
+	"mpp/command"
+	"mpp/error_util"
+	"mpp/omdb"
+	"net/http"
+)
 
-func OnMovieListRequest(writer *http.ResponseWriter, request *http.Request) {
-	(*writer).Write([]byte("LIST DA MOVIESSS"))
-	// var movies []*types.Movie
-	// queryMovies(&movies)
+func ListMovies(writer http.ResponseWriter, request *http.Request) {
+	movies, err := command.GetMovieList()
+	error_util.CheckError(err)
 
-	// context.IndentedJSON(http.StatusOK, &movies)
+	// get rid of the plot field
+	for _, movie := range movies {
+		movie.Plot_summary = nil
+	}
+
+	err = omdb.WriteJSONResponse(writer, movies)
+	error_util.CheckError(err)
 }

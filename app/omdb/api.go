@@ -1,18 +1,12 @@
 package omdb
 
 import (
-	"encoding/json"
 	"fmt"
-	"mpp/error_util"
+	"mpp/types"
 	"net/http"
 )
 
-type MovieSummary struct {
-	Response string
-	Error    string
-}
-
-const API_KEY = ""
+const API_KEY = "899f543d"
 
 func buildUrl(id *string) string {
 	return fmt.Sprintf(
@@ -22,18 +16,30 @@ func buildUrl(id *string) string {
 	)
 }
 
-func parseJSON(res *http.Response, data any) {
-	err := json.NewDecoder(res.Body).Decode(data)
-	error_util.CheckError(err)
+func getRequest(url *string, data any) error {
+	response, err := http.Get(*url)
+	if err != nil {
+		return fmt.Errorf("getRequest: failed to execute get request: %w", err)
+	}
+
+	err = ReadJSONRequest(response.Body, data)
+	if err != nil {
+		return fmt.Errorf("getRequest: %w", err)
+	}
+
+	return nil
 }
 
-func getRequest(url *string, data any) {
-	res, err := http.Get(*url)
-	error_util.CheckError(err)
-	parseJSON(res, data)
-}
-
-func GetMovieSummary(id *string, summary *MovieSummary) {
+func GetMovieSummary(id *string, summary *types.MovieSummary) error {
 	requestUrl := buildUrl(id)
-	go getRequest(&requestUrl, &summary)
+	err := getRequest(&requestUrl, &summary)
+	if err != nil {
+		return fmt.Errorf("GetMovieSummary: %w", err)
+	}
+
+	if summary.OK == "False" {
+		return fmt.Errorf("GetMovieSummary: the API returned an error: %s", summary.Error)
+	}
+
+	return nil
 }

@@ -1,10 +1,12 @@
 package router
 
-import "net/http"
+import (
+	"mpp/command"
+	"net/http"
+)
 
-func OnMovieDeleteRequest(writer *http.ResponseWriter, request *http.Request) {
-	(*writer).Write([]byte("DELETE DA MOVIE"))
-	// id := context.Param("id")
-	// command.DeleteMovie(&id)
-	// context.Status(http.StatusNoContent)
+func DeleteMovie(writer http.ResponseWriter, request *http.Request) {
+	id := GetUrlId(request)
+	command.DeleteMovie(&id)
+	writer.WriteHeader(http.StatusNoContent)
 }

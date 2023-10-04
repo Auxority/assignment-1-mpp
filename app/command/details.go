@@ -5,9 +5,36 @@ import (
 	"flag"
 	"fmt"
 	"mpp/database"
-	"mpp/error_util"
 	"mpp/types"
 )
+
+func ShowMovieDetails(id *string) error {
+	movie, err := GetMovieDetails(id)
+	if err != nil {
+		return fmt.Errorf("ShowDetails: %w", err)
+	}
+
+	fmt.Printf("IMDb id: %s\nTitle: %s\nRating: %.1f\nYear: %d\n", *movie.IMDbId, *movie.Title, *movie.IMDbRating, *movie.ReleaseYear)
+
+	return nil
+}
+
+func GetMovieDetails(id *string) (*types.Movie, error) {
+	sql := `
+		SELECT IMDb_id, Title, Rating, Year, Plot_summary
+		FROM movies
+		WHERE IMDb_id = ?;
+	`
+
+	movies, err := database.QueryDatabase(&sql, getMovieFromRow, *id)
+	if err != nil {
+		return nil, fmt.Errorf("GetMovieDetails: %w", err)
+	}
+
+	movie := (*movies[0]).(*types.Movie)
+
+	return movie, nil
+}
 
 func createDetailsCommand() (*flag.FlagSet, *string) {
 	name := "details"
@@ -17,24 +44,12 @@ func createDetailsCommand() (*flag.FlagSet, *string) {
 	return command, imdbIdParameter
 }
 
-func ShowDetails(id *string) {
-	sql := fmt.Sprintf(`
-		SELECT IMDb_id, Title, Rating, Year
-		FROM movies
-		WHERE IMDb_id='%s';
-	`, *id)
-
-	database.QueryDatabase(&sql, showDetailsRow)
-}
-
-func showDetailsRow(rows *sql.Rows) {
-	movie := getDetailsRow(rows)
-	fmt.Printf("IMDb id: %s\nTitle: %s\nRating: %.1f\nYear: %d\n", *movie.IMDbId, *movie.Title, *movie.IMDbRating, *movie.ReleaseYear)
-}
-
-func getDetailsRow(rows *sql.Rows) *types.Movie {
+func getMovieFromRow(rows *sql.Rows) (any, error) {
 	var movie types.Movie
-	err := rows.Scan(&movie.IMDbId, &movie.Title, &movie.IMDbRating, &movie.ReleaseYear)
-	error_util.CheckError(err)
-	return &movie
+	err := rows.Scan(&movie.IMDbId, &movie.Title, &movie.IMDbRating, &movie.ReleaseYear, &movie.Plot_summary)
+	if err != nil {
+		return nil, fmt.Errorf("getMovieFromRow: failed to scan rows: %w", err)
+	}
+
+	return &movie, nil
 }

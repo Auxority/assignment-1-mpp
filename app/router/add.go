@@ -1,15 +1,18 @@
 package router
 
-import "net/http"
+import (
+	"mpp/command"
+	"mpp/error_util"
+	"mpp/omdb"
+	"mpp/types"
+	"net/http"
+)
 
-func OnMovieAddRequest(writer *http.ResponseWriter, request *http.Request) {
-	(*writer).Write([]byte("ADD A MOVIE"))
-	// var movie types.Movie
+func AddMovie(writer http.ResponseWriter, request *http.Request) {
+	var movie types.Movie
+	err := omdb.ReadJSONRequest(request.Body, &movie)
+	error_util.CheckError(err)
 
-	// err := context.BindJSON(&movie)
-	// error_util.CheckError(err)
-
-	// command.AddMovie(&movie)
-
-	// context.IndentedJSON(http.StatusOK, &movie)
+	command.AddMovie(&movie)
+	writeMovieDetailsResponse(*movie.IMDbId, writer)
 }

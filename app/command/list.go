@@ -1,21 +1,37 @@
 package command
 
 import (
-	"database/sql"
 	"fmt"
 	"mpp/database"
-	"mpp/error_util"
+	"mpp/types"
 )
 
-func ShowTitles() {
-	sql := "SELECT Title FROM movies;"
+func ShowMovieList() error {
+	movies, err := GetMovieList()
+	if err != nil {
+		return fmt.Errorf("ShowMovieList: %w", err)
+	}
 
-	database.QueryDatabase(&sql, showTitleRow)
+	for _, movie := range movies {
+		fmt.Println(*movie.Title)
+	}
+
+	return nil
 }
 
-func showTitleRow(rows *sql.Rows) {
-	var title string
-	err := rows.Scan(&title)
-	error_util.CheckError(err)
-	fmt.Println(title)
+func GetMovieList() ([]*types.Movie, error) {
+	sql := "SELECT IMDb_id, Title, Rating, Year, Plot_summary FROM movies;"
+	rows, err := database.QueryDatabase(&sql, getMovieFromRow)
+
+	if err != nil {
+		return nil, fmt.Errorf("GetMovieList: %w", err)
+	}
+
+	var movies []*types.Movie
+	for _, row := range rows {
+		movie := (*row).(*types.Movie)
+		movies = append(movies, movie)
+	}
+
+	return movies, nil
 }

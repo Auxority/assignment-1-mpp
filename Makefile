@@ -77,12 +77,15 @@ test: ## Test all the commands
 	@docker compose exec mpp curl -i -s -X DELETE localhost:8090/movies/tt0058150 | head -n 1
 
 	@printf "\033[32mRunning API details endpoint...\033[0m\n"
-	@docker compose exec mpp curl -S -s localhost:8090/movies/tt0034583
+	@docker compose exec mpp curl -S -s localhost:8090/movies/tt0034583 | head -n 1
 
 	@printf "\033[32mRunning API add endpoint...\033[0m\n"
-	@docker compose exec mpp curl -X POST -H "Content-Type: mpplication/json" -d '{"imdb_id": "tt0368226", "title": "The Room", "rating": 3.7, "year": 2003}' localhost:8090/movies
+	@docker compose exec mpp curl -X POST -H "Content-Type: application/json" -d '{"imdb_id": "tt0368226", "title": "The Room", "rating": 3.7, "year": 2003}' localhost:8090/movies
 
 	@printf "\033[32mRunning API delete endpoint...\033[0m\n"
+	@docker compose exec mpp curl -i -s -X DELETE localhost:8090/movies/tt0368226 | head -n 1
+
+	@printf "\033[32mRunning API 404 test...\033[0m\n"
 	@docker compose exec mpp curl -i -s localhost:8090/movies/non-existent | head -n 1
 
 	@printf "\033[32mRestoring database...\033[0m\n"

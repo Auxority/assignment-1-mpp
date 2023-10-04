@@ -1,6 +1,6 @@
 bin
 .vscode
 .idea
-movies.db
+*.db
 .env
 *.zip

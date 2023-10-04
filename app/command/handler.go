@@ -1,4 +1,4 @@
-package main
+package command
 
 import (
 	"flag"
@@ -18,18 +18,18 @@ func HandleCommand(arguments []string) error {
 	switch arguments[0] {
 	case "add":
 		parseArguments(addCommand, &arguments)
-		AddMovieCommand(addImdbId, addTitle, addImdbRating, addYear)
+		return AddAndShowMovie(addImdbId, addTitle, addImdbRating, addYear)
 	case "list":
-		ShowTitles()
+		return ShowMovieList()
 	case "details":
 		parseArguments(detailsCommand, &arguments)
-		ShowDetails(detailsImdbId)
+		return ShowMovieDetails(detailsImdbId)
 	case "delete":
 		parseArguments(deleteCommand, &arguments)
-		DeleteMovieCommand(deleteImdbId)
+		return ShowMovieDeletion(deleteImdbId)
+	case "summaries":
+		return ShowMovieSummaries()
 	default:
 		return fmt.Errorf("unable to find the provided '%q' command", arguments[0])
 	}
-
-	return nil
 }

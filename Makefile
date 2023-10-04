@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := help
+ZIP_FILE_NAME := project_files.zip
 
 .PHONY: help
 help: ## Show the available commands
@@ -77,16 +78,41 @@ test: ## Test all the commands
 	@docker compose exec mpp curl -i -s -X DELETE localhost:8090/movies/tt0058150 | head -n 1
 
 	@printf "\033[32mRunning API details endpoint...\033[0m\n"
-	@docker compose exec mpp curl -S -s localhost:8090/movies/tt0034583
+	@docker compose exec mpp curl -S -s localhost:8090/movies/tt0034583 | head -n 1
 
 	@printf "\033[32mRunning API add endpoint...\033[0m\n"
-	@docker compose exec mpp curl -X POST -H "Content-Type: mpplication/json" -d '{"imdb_id": "tt0368226", "title": "The Room", "rating": 3.7, "year": 2003}' localhost:8090/movies
+	@docker compose exec mpp curl -X POST -H "Content-Type: application/json" -d '{"imdb_id": "tt0368226", "title": "The Room", "rating": 3.7, "year": 2003}' localhost:8090/movies
 
 	@printf "\033[32mRunning API delete endpoint...\033[0m\n"
+	@docker compose exec mpp curl -i -s -X DELETE localhost:8090/movies/tt0368226 | head -n 1
+
+	@printf "\033[32mRunning API 404 test...\033[0m\n"
 	@docker compose exec mpp curl -i -s localhost:8090/movies/non-existent | head -n 1
 
 	@printf "\033[32mRestoring database...\033[0m\n"
 	@docker compose exec mpp cp /app/movies.db.bak /app/movies.db
 	@docker compose exec mpp rm /app/movies.db.bak
+
+	@printf "\033[32mDone!\033[0m\n"
+
+.PHONY: package
+package: ## Packages all relevant files into a ZIP file, ready for submission
+	@printf "\033[32mPackaging all relevant files into a zip file...\033[0m\n"
+
+	@printf "\033[32mDeleting old zip file...\033[0m\n"
+	@test -f ${ZIP_FILE_NAME} && rm ${ZIP_FILE_NAME} || true
+
+	@printf "\033[32mFinding all relevant files...\033[0m\n"
+	@find app -name '*.go' -type f > go_files.txt
+
+	@printf "\033[32mCopying README.md to app/README.md...\033[0m\n"
+	@cp README.md app/README.md
+
+	@printf "\033[32mZipping all relevant files...\033[0m\n"
+	@zip -q -@ $(ZIP_FILE_NAME) app/README.md app/go.mod app/go.sum < go_files.txt
+
+	@printf "\033[32mCleaning up temporary files...\033[0m\n"
+	@rm go_files.txt
+	@rm app/README.md
 
 	@printf "\033[32mDone!\033[0m\n"

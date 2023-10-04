@@ -1,10 +1,10 @@
-FROM golang:alpine
+FROM golang:1.21-alpine
 
 WORKDIR /app
 
 COPY ./app .
 
-# Add required depdencies for go-sqlite3, and add curl
+# Add required dependencies for go-sqlite3, and add curl
 RUN apk add --update --no-cache gcc musl-dev curl
 
 # CompileDaemon documentation: https://github.com/githubnemo/CompileDaemon

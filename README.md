@@ -20,5 +20,3 @@ And here's why:
 - I should also limit the number of methods called from a function to two or three, depending on whether an if statement was used or not.
 
 > *And again, it still works ;)*
-
-# TODO: Write a Make command that copies the README file, zips all relevant files, moves the ZIP to the root directory, and deletes the copy of the readme.

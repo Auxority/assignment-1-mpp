@@ -8,7 +8,7 @@ import (
 )
 
 const DRIVER_NAME string = "sqlite3"
-const DB_FILE_NAME string = "./movies.db"
+const DB_FILE_NAME string = "./data/movies.db"
 
 func OpenDatabase() (*sql.DB, error) {
 	database, err := sql.Open(DRIVER_NAME, DB_FILE_NAME)

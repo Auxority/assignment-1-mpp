@@ -3,7 +3,7 @@ package command
 import (
 	"flag"
 	"fmt"
-	"mpp/database"
+	"mpp/api/database"
 )
 
 func createDeleteCommand() (*flag.FlagSet, *string) {

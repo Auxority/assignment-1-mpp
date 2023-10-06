@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"mpp/command"
+	"mpp/api/command"
+	"mpp/api/router"
 	"mpp/error_util"
-	"mpp/router"
 )
 
 func main() {

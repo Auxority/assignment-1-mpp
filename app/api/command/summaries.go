@@ -2,9 +2,9 @@ package command
 
 import (
 	"fmt"
-	"mpp/database"
-	"mpp/omdb"
-	"mpp/types"
+	"mpp/api/database"
+	"mpp/api/omdb"
+	"mpp/api/types"
 	"sync"
 )
 

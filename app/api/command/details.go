@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
-	"mpp/database"
-	"mpp/types"
+	"mpp/api/database"
+	"mpp/api/types"
 )
 
 func ShowMovieDetails(id *string) error {

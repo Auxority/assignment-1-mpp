@@ -2,8 +2,8 @@ package router
 
 import (
 	"fmt"
-	"mpp/command"
-	"mpp/omdb"
+	"mpp/api/command"
+	"mpp/api/omdb"
 	"net/http"
 )
 

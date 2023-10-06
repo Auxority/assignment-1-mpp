@@ -1,7 +1,7 @@
 package router
 
 import (
-	"mpp/command"
+	"mpp/api/command"
 	"net/http"
 )
 

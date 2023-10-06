@@ -1,9 +1,9 @@
 package router
 
 import (
-	"mpp/command"
+	"mpp/api/command"
+	"mpp/api/omdb"
 	"mpp/error_util"
-	"mpp/omdb"
 	"net/http"
 )
 

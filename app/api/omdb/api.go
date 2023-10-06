@@ -2,7 +2,7 @@ package omdb
 
 import (
 	"fmt"
-	"mpp/types"
+	"mpp/api/types"
 	"net/http"
 )
 

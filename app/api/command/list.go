@@ -2,8 +2,8 @@ package command
 
 import (
 	"fmt"
-	"mpp/database"
-	"mpp/types"
+	"mpp/api/database"
+	"mpp/api/types"
 )
 
 func ShowMovieList() error {

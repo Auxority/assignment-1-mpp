@@ -13,6 +13,9 @@ func AddMovie(writer http.ResponseWriter, request *http.Request) {
 	err := omdb.ReadJSONRequest(request.Body, &movie)
 	error_util.CheckError(err)
 
-	command.AddMovie(&movie)
-	writeMovieDetailsResponse(*movie.IMDbId, writer)
+	err = command.AddMovie(&movie)
+	error_util.CheckError(err)
+
+	err = writeMovieDetailsResponse(*movie.IMDbId, writer)
+	error_util.CheckError(err)
 }

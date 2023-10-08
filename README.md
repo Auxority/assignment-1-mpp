@@ -1,6 +1,15 @@
-# Apollo 13 - Opinion on Code Quality
+Opinion on Code Quality
 
-The code quality has improved and degraded simultaneously this time around.
+- No error thrown when a movie is added with a duplicate IMDb id.
+- Barely any validation, data types alone do not suffice.
+
+
+<!-- # Apollo 13 - Opinion on Code Quality -->
+
+
+
+
+<!-- The code quality has improved and degraded simultaneously this time around.
 
 And here's why:
 - I now use interfaces to prevent code duplication.
@@ -19,4 +28,4 @@ And here's why:
 - Ideally I would limit the number of if statements per function to one. But in many cases functions contain way more than that, increasing my code complexity.
 - I should also limit the number of methods called from a function to two or three, depending on whether an if statement was used or not.
 
-> *And again, it still works ;)*
+> *And again, it still works ;)* -->

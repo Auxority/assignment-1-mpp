@@ -20,7 +20,7 @@ func HandleCommand(arguments []string) error {
 		parseArguments(addCommand, &arguments)
 		return AddAndShowMovie(addImdbId, addTitle, addImdbRating, addYear, addPlot)
 	case "list":
-		return ShowMovieList()
+		return ShowMovieList(0, 2000)
 	case "details":
 		parseArguments(detailsCommand, &arguments)
 		return ShowMovieDetails(detailsImdbId)

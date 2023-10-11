@@ -2,6 +2,7 @@ package omdb
 
 import (
 	"fmt"
+	"mpp/api/json_util"
 	"mpp/api/types"
 	"net/http"
 )
@@ -10,7 +11,7 @@ const API_KEY = "899f543d"
 
 func buildUrl(id *string) string {
 	return fmt.Sprintf(
-		"http://www.omdbapi.com/?apikey=%s&i=%s",
+		"https://www.omdbapi.com/?apikey=%s&i=%s",
 		API_KEY,
 		*id,
 	)
@@ -22,7 +23,7 @@ func getRequest(url *string, data any) error {
 		return fmt.Errorf("getRequest: failed to execute get request: %w", err)
 	}
 
-	err = ReadJSONRequest(response.Body, data)
+	err = json_util.ReadJSONRequest(response.Body, data)
 	if err != nil {
 		return fmt.Errorf("getRequest: %w", err)
 	}
@@ -30,16 +31,17 @@ func getRequest(url *string, data any) error {
 	return nil
 }
 
-func GetMovieSummary(id *string, summary *types.MovieSummary) error {
+func GetMovieDetails(id *string) (*types.MovieDetails, error) {
+	var details types.MovieDetails
 	requestUrl := buildUrl(id)
-	err := getRequest(&requestUrl, &summary)
+	err := getRequest(&requestUrl, &details)
 	if err != nil {
-		return fmt.Errorf("GetMovieSummary: %w", err)
+		return nil, fmt.Errorf("GetMovieDetails: %w", err)
 	}
 
-	if summary.OK == "False" {
-		return fmt.Errorf("GetMovieSummary: the API returned an error: %s", summary.Error)
+	if details.OK == "False" || details.OK == "" {
+		return nil, fmt.Errorf("GetMovieDetails: the API returned an error: %s", details.Error)
 	}
 
-	return nil
+	return &details, nil
 }

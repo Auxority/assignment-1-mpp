@@ -9,7 +9,7 @@ import (
 )
 
 func ShowMovieSummaries() error {
-	movies, err := GetMovieList()
+	movies, err := GetMovieList(0, 2000)
 	if err != nil {
 		return fmt.Errorf("ShowMovieSummaries: %w", err)
 	}
@@ -41,18 +41,21 @@ func ShowMovieSummaries() error {
 
 func showMovieSummary(waitGroup *sync.WaitGroup, movie *types.Movie, errChannel *chan error, limitConcurrency *chan struct{}) {
 	defer waitGroup.Done()
-	err := addAndShowMovieSummary(movie)
+	err := addMovieSummary(movie)
 	if err != nil {
 		*errChannel <- err
 	}
 	<-*limitConcurrency
 }
 
-func addAndShowMovieSummary(movie *types.Movie) error {
-	var summary types.MovieSummary
-	err := omdb.GetMovieSummary(movie.IMDbId, &summary)
+func addMovieSummary(movie *types.Movie) error {
+	if movie.Plot_summary != nil {
+		return nil
+	}
+
+	details, err := omdb.GetMovieDetails(movie.IMDbId)
 	if err != nil {
-		return fmt.Errorf("addAndShowMovieSummary: %w", err)
+		return fmt.Errorf("addMovieSummary: %w", err)
 	}
 
 	sql := `
@@ -60,9 +63,9 @@ func addAndShowMovieSummary(movie *types.Movie) error {
 			SET Plot_summary = ?
 			WHERE imdb_id = ?
 		`
-	err = database.ExecDatabase(&sql, summary.Plot, *movie.IMDbId)
+	err = database.ExecDatabase(&sql, details.Plot_summary, *movie.IMDbId)
 	if err != nil {
-		return fmt.Errorf("addAndShowMovieSummary: %w", err)
+		return fmt.Errorf("addMovieSummary: %w", err)
 	}
 
 	return nil

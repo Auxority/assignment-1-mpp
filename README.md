@@ -2,7 +2,7 @@ Opinion on Code Quality
 
 - No error thrown when a movie is added with a duplicate IMDb id.
 - Barely any validation, data types alone do not suffice.
-
+- The application now uses the HTTPS OMDb API instead of the HTTP version. This improves security with the help of encryption.
 
 <!-- # Apollo 13 - Opinion on Code Quality -->
 

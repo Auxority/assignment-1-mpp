@@ -3,7 +3,7 @@ package router
 import (
 	"fmt"
 	"mpp/api/command"
-	"mpp/api/omdb"
+	"mpp/api/json_util"
 	"net/http"
 )
 
@@ -22,7 +22,7 @@ func writeMovieDetailsResponse(id string, writer http.ResponseWriter) error {
 		return fmt.Errorf("writeMovieDetailsResponse: %w", err)
 	}
 
-	err = omdb.WriteJSONResponse(writer, movie)
+	err = json_util.WriteJSONResponse(writer, movie)
 	if err != nil {
 		return fmt.Errorf("writeMovieDetailsResponse: %w", err)
 	}

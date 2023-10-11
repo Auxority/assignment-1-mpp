@@ -60,7 +60,7 @@ test: ## Test all the commands
 	@printf "\033[32mTesting the Go application...\033[0m\n"
 
 	@printf "\033[32mCreating temporary backup of database...\033[0m\n"
-	@docker compose exec mpp cp /app/movies.db /app/movies.db.bak
+	@docker compose exec mpp cp /app/data/movies.db /app/data/movies.db.bak
 
 	@printf "\033[32mRunning list command...\033[0m\n"
 	@docker compose exec mpp ./bin/main list
@@ -90,8 +90,8 @@ test: ## Test all the commands
 	@docker compose exec mpp curl -i -s localhost:8090/movies/non-existent | head -n 1
 
 	@printf "\033[32mRestoring database...\033[0m\n"
-	@docker compose exec mpp cp /app/movies.db.bak /app/movies.db
-	@docker compose exec mpp rm /app/movies.db.bak
+	@docker compose exec mpp cp /app/data/movies.db.bak /app/data/movies.db
+	@docker compose exec mpp rm /app/data/movies.db.bak
 
 	@printf "\033[32mDone!\033[0m\n"
 

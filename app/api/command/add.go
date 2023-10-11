@@ -34,7 +34,6 @@ func AddMovie(movie *types.Movie) error {
 		INSERT INTO movies (IMDb_id, Title, Rating, Year, Plot_summary)
 		VALUES (?, ?, ?, ?, ?);
 	`
-	fmt.Println(*movie.IMDbId, *movie.Title, *movie.IMDbRating, *movie.ReleaseYear, *movie.Plot_summary)
 	err := database.ExecDatabase(&sql, *movie.IMDbId, *movie.Title, *movie.IMDbRating, *movie.ReleaseYear, *movie.Plot_summary)
 	if err != nil {
 		return fmt.Errorf("AddMovie: %w", err)

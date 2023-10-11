@@ -7,8 +7,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const DRIVER_NAME string = "sqlite3"
-const DB_FILE_NAME string = "./data/movies.db"
+const (
+	DRIVER_NAME  string = "sqlite3"
+	DB_FILE_NAME string = "./data/movies.db"
+)
 
 func OpenDatabase() (*sql.DB, error) {
 	database, err := sql.Open(DRIVER_NAME, DB_FILE_NAME)

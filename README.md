@@ -4,6 +4,8 @@ Opinion on Code Quality
 - Barely any validation, data types alone do not suffice.
 - The application now uses the HTTPS OMDb API instead of the HTTP version. This improves security with the help of encryption.
 
+# TODO: ADD PAGINATION
+
 <!-- # Apollo 13 - Opinion on Code Quality -->
 
 

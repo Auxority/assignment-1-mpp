@@ -6,8 +6,8 @@ import (
 	"mpp/api/types"
 )
 
-func ShowMovieList(page int, limit int) error {
-	movies, err := GetMovieList(page, limit)
+func ShowMovieList() error {
+	movies, err := GetMovieList()
 	if err != nil {
 		return fmt.Errorf("ShowMovieList: %w", err)
 	}
@@ -19,16 +19,13 @@ func ShowMovieList(page int, limit int) error {
 	return nil
 }
 
-func GetMovieList(page int, limit int) ([]*types.Movie, error) {
+func GetMovieList() ([]*types.Movie, error) {
 	sql := `
 		SELECT IMDb_id, Title, Rating, Year, Plot_summary
 		FROM movies
-		ORDER BY Year DESC
-		LIMIT $1
-		OFFSET $2
+		ORDER BY Year DESC;
 	`
-	offset := page * limit
-	rows, err := database.QueryDatabase(&sql, getMovieFromRow, limit, offset)
+	rows, err := database.QueryDatabase(&sql, getMovieFromRow)
 
 	if err != nil {
 		return nil, fmt.Errorf("GetMovieList: %w", err)

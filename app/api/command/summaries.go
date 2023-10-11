@@ -9,7 +9,7 @@ import (
 )
 
 func ShowMovieSummaries() error {
-	movies, err := GetMovieList(0, 2000)
+	movies, err := GetMovieList()
 	if err != nil {
 		return fmt.Errorf("ShowMovieSummaries: %w", err)
 	}

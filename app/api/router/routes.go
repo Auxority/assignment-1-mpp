@@ -8,6 +8,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const (
+	MOVIES_API_ENDPOINT string = "/movies"
+	MOVIE_API_ENDPOINT  string = "/movies/{id:tt[0-9]+}"
+)
+
 func StartAPI() {
 	address := getAddress()
 	registerRoutes()
@@ -15,9 +20,6 @@ func StartAPI() {
 }
 
 func registerRoutes() {
-	const MOVIES_API_ENDPOINT string = "/movies"
-	const MOVIE_API_ENDPOINT string = "/movies/{id:tt[0-9]+}"
-
 	router := mux.NewRouter()
 
 	router.HandleFunc(MOVIES_API_ENDPOINT, ListMovies).Methods(http.MethodGet)

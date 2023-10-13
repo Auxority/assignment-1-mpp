@@ -30,6 +30,6 @@ func HandleCommand(arguments []string) error {
 	case "summaries":
 		return ShowMovieSummaries()
 	default:
-		return fmt.Errorf("unable to find the provided '%q' command", arguments[0])
+		return fmt.Errorf("HandleCommand: unable to find the provided '%q' command", arguments[0])
 	}
 }

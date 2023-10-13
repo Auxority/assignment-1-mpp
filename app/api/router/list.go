@@ -2,7 +2,7 @@ package router
 
 import (
 	"mpp/api/command"
-	"mpp/api/omdb"
+	"mpp/api/json_util"
 	"mpp/error_util"
 	"net/http"
 )
@@ -10,7 +10,6 @@ import (
 func ListMovies(writer http.ResponseWriter, request *http.Request) {
 	movies, err := command.GetMovieList()
 	error_util.CheckError(err)
-
-	err = omdb.WriteJSONResponse(writer, movies)
+	err = json_util.WriteJSONResponse(writer, movies)
 	error_util.CheckError(err)
 }

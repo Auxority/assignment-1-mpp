@@ -7,8 +7,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const DRIVER_NAME string = "sqlite3"
-const DB_FILE_NAME string = "./data/movies.db"
+const (
+	DRIVER_NAME  string = "sqlite3"
+	DB_FILE_NAME string = "./data/movies.db"
+)
 
 func OpenDatabase() (*sql.DB, error) {
 	database, err := sql.Open(DRIVER_NAME, DB_FILE_NAME)
@@ -43,23 +45,30 @@ func QueryDatabase(sql *string, nextRowFunc func(rows *sql.Rows) (any, error), a
 
 	rows, err := database.Query(*sql, args...)
 	if err != nil {
-		fmt.Println(*sql)
-		fmt.Println(args...)
 		return nil, fmt.Errorf("QueryDatabase: failed to query database: %w", err)
 	}
 	defer rows.Close()
 
+	results, err := getResults(rows, nextRowFunc)
+	if err != nil {
+		return nil, fmt.Errorf("QueryDatabase: failed to get results: %w", err)
+	}
+
+	return results, nil
+}
+
+func getResults(rows *sql.Rows, nextRowFunc func(rows *sql.Rows) (any, error)) ([]*any, error) {
 	var results []*any
 	for rows.Next() {
 		result, err := nextRowFunc(rows)
 		if err != nil {
-			return nil, fmt.Errorf("QueryDatabase: failed to run next row function: %w", err)
+			return nil, fmt.Errorf("getResults: failed to run next row function: %w", err)
 		}
 		results = append(results, &result)
 	}
 
 	if len(results) == 0 {
-		return nil, fmt.Errorf("QueryDatabase: no results found")
+		return nil, fmt.Errorf("getResults: no results found")
 	}
 
 	return results, nil

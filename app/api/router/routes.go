@@ -8,6 +8,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const (
+	MOVIES_API_ENDPOINT string = "/movies"
+	MOVIE_API_ENDPOINT  string = "/movies/{id:tt[0-9]+}"
+)
+
 func StartAPI() {
 	address := getAddress()
 	registerRoutes()
@@ -15,14 +20,14 @@ func StartAPI() {
 }
 
 func registerRoutes() {
-	const MOVIES_ENDPOINT string = "/movies"
-	const MOVIE_ENDPOINT string = "/movies/{id:tt[0-9]+}"
-
 	router := mux.NewRouter()
-	router.HandleFunc(MOVIES_ENDPOINT, ListMovies).Methods(http.MethodGet)
-	router.HandleFunc(MOVIE_ENDPOINT, MovieDetails).Methods(http.MethodGet)
-	router.HandleFunc(MOVIES_ENDPOINT, AddMovie).Methods(http.MethodPost)
-	router.HandleFunc(MOVIE_ENDPOINT, DeleteMovie).Methods(http.MethodDelete)
+
+	router.HandleFunc(MOVIES_API_ENDPOINT, ListMovies).Methods(http.MethodGet)
+	router.HandleFunc(MOVIE_API_ENDPOINT, MovieDetails).Methods(http.MethodGet)
+	router.HandleFunc(MOVIES_API_ENDPOINT, AddMovie).Methods(http.MethodPost)
+	router.HandleFunc(MOVIE_API_ENDPOINT, DeleteMovie).Methods(http.MethodDelete)
+
+	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public")))
 
 	http.Handle("/", router)
 }

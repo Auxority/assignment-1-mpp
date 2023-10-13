@@ -11,14 +11,14 @@ func parseArguments(command *flag.FlagSet, arguments *[]string) {
 }
 
 func HandleCommand(arguments []string) error {
-	addCommand, addImdbId, addTitle, addImdbRating, addYear := createAddCommand()
+	addCommand, addImdbId, addTitle, addImdbRating, addYear, addPlot := createAddCommand()
 	detailsCommand, detailsImdbId := createDetailsCommand()
 	deleteCommand, deleteImdbId := createDeleteCommand()
 
 	switch arguments[0] {
 	case "add":
 		parseArguments(addCommand, &arguments)
-		return AddAndShowMovie(addImdbId, addTitle, addImdbRating, addYear)
+		return AddAndShowMovie(addImdbId, addTitle, addImdbRating, addYear, addPlot)
 	case "list":
 		return ShowMovieList()
 	case "details":

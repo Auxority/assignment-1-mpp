@@ -6,19 +6,8 @@ import (
 	"mpp/api/database"
 )
 
-func createDeleteCommand() (*flag.FlagSet, *string) {
-	name := "delete"
-	command := CreateNewCommand(&name)
-	imdbIdParameter := CreateImdbIdParameter(command)
-
-	return command, imdbIdParameter
-}
-
 func DeleteMovie(id *string) error {
-	sql := `
-		DELETE FROM movies
-		WHERE IMDb_id = ?;
-	`
+	sql := `DELETE FROM movies WHERE IMDb_id = ?;`
 
 	err := database.ExecDatabase(&sql, *id)
 	if err != nil {
@@ -37,4 +26,12 @@ func ShowMovieDeletion(id *string) error {
 	fmt.Println("Movie deleted")
 
 	return nil
+}
+
+func createDeleteCommand() (*flag.FlagSet, *string) {
+	name := "delete"
+	command := CreateNewCommand(&name)
+	imdbIdParameter := CreateImdbIdParameter(command)
+
+	return command, imdbIdParameter
 }

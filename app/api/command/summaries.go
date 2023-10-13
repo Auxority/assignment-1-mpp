@@ -41,28 +41,28 @@ func ShowMovieSummaries() error {
 
 func showMovieSummary(waitGroup *sync.WaitGroup, movie *types.Movie, errChannel *chan error, limitConcurrency *chan struct{}) {
 	defer waitGroup.Done()
-	err := addAndShowMovieSummary(movie)
+	err := addMovieSummary(movie)
 	if err != nil {
 		*errChannel <- err
 	}
 	<-*limitConcurrency
 }
 
-func addAndShowMovieSummary(movie *types.Movie) error {
-	var summary types.MovieSummary
-	err := omdb.GetMovieSummary(movie.IMDbId, &summary)
-	if err != nil {
-		return fmt.Errorf("addAndShowMovieSummary: %w", err)
+func addMovieSummary(movie *types.Movie) error {
+	if movie.Plot_summary != nil {
+		return nil
 	}
 
-	sql := `
-			UPDATE movies
-			SET Plot_summary = ?
-			WHERE imdb_id = ?
-		`
-	err = database.ExecDatabase(&sql, summary.Plot, *movie.IMDbId)
+	details, err := omdb.GetMovieDetails(movie.IMDbId)
 	if err != nil {
-		return fmt.Errorf("addAndShowMovieSummary: %w", err)
+		return fmt.Errorf("addMovieSummary: %w", err)
+	}
+
+	sql := `UPDATE movies SET Plot_summary = ? WHERE imdb_id = ?;`
+
+	err = database.ExecDatabase(&sql, details.Plot_summary, *movie.IMDbId)
+	if err != nil {
+		return fmt.Errorf("addMovieSummary: %w", err)
 	}
 
 	return nil

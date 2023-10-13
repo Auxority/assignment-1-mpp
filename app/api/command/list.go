@@ -20,11 +20,8 @@ func ShowMovieList() error {
 }
 
 func GetMovieList() ([]*types.Movie, error) {
-	sql := `
-		SELECT IMDb_id, Title, Rating, Year, Plot_summary
-		FROM movies
-		ORDER BY Year DESC;
-	`
+	sql := `SELECT IMDb_id, Title, Rating, Year, Plot_summary FROM movies ORDER BY Year DESC;`
+
 	rows, err := database.QueryDatabase(&sql, getMovieFromRow)
 
 	if err != nil {

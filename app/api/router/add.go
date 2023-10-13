@@ -48,13 +48,7 @@ func searchMovie(writer http.ResponseWriter, request *http.Request, id *string) 
 		rating = &testRating
 	}
 
-	movie := types.Movie{
-		IMDbId:       &details.IMDbId,
-		Title:        &details.Title,
-		IMDbRating:   rating,
-		ReleaseYear:  releaseYear,
-		Plot_summary: &details.Plot_summary,
-	}
+	movie := types.Movie{IMDbId: &details.IMDbId, Title: &details.Title, IMDbRating: rating, ReleaseYear: releaseYear, Plot_summary: &details.Plot_summary}
 
 	return &movie, nil
 }

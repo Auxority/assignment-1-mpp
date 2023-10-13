@@ -58,11 +58,8 @@ func addMovieSummary(movie *types.Movie) error {
 		return fmt.Errorf("addMovieSummary: %w", err)
 	}
 
-	sql := `
-			UPDATE movies
-			SET Plot_summary = ?
-			WHERE imdb_id = ?
-		`
+	sql := `UPDATE movies SET Plot_summary = ? WHERE imdb_id = ?;`
+
 	err = database.ExecDatabase(&sql, details.Plot_summary, *movie.IMDbId)
 	if err != nil {
 		return fmt.Errorf("addMovieSummary: %w", err)

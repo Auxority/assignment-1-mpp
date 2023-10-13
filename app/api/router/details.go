@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"mpp/api/command"
 	"mpp/api/json_util"
+	"mpp/error_util"
 	"net/http"
 )
 
@@ -11,7 +12,7 @@ func MovieDetails(writer http.ResponseWriter, request *http.Request) {
 	id := GetUrlId(request)
 	err := writeMovieDetailsResponse(id, writer)
 	if err != nil {
-		fmt.Printf("Could not find movie! - %s\n", err.Error())
+		error_util.CheckError(err)
 		writer.WriteHeader(http.StatusNotFound)
 	}
 }

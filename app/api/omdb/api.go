@@ -9,12 +9,23 @@ import (
 
 const API_KEY = "899f543d"
 
+func GetMovieDetails(id *string) (*types.MovieDetails, error) {
+	var details types.MovieDetails
+	requestUrl := buildUrl(id)
+	err := getRequest(&requestUrl, &details)
+	if err != nil {
+		return nil, fmt.Errorf("GetMovieDetails: %w", err)
+	}
+
+	if details.OK == "False" || details.OK == "" {
+		return nil, fmt.Errorf("GetMovieDetails: the API returned an error: %s", details.Error)
+	}
+
+	return &details, nil
+}
+
 func buildUrl(id *string) string {
-	return fmt.Sprintf(
-		"https://www.omdbapi.com/?apikey=%s&i=%s",
-		API_KEY,
-		*id,
-	)
+	return fmt.Sprintf("https://www.omdbapi.com/?apikey=%s&i=%s", API_KEY, *id)
 }
 
 func getRequest(url *string, data any) error {
@@ -29,19 +40,4 @@ func getRequest(url *string, data any) error {
 	}
 
 	return nil
-}
-
-func GetMovieDetails(id *string) (*types.MovieDetails, error) {
-	var details types.MovieDetails
-	requestUrl := buildUrl(id)
-	err := getRequest(&requestUrl, &details)
-	if err != nil {
-		return nil, fmt.Errorf("GetMovieDetails: %w", err)
-	}
-
-	if details.OK == "False" || details.OK == "" {
-		return nil, fmt.Errorf("GetMovieDetails: the API returned an error: %s", details.Error)
-	}
-
-	return &details, nil
 }

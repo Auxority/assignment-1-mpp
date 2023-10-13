@@ -33,7 +33,6 @@ func ParseInteger(value *string) (*int, error) {
 	}
 
 	lastNumber := matches[0]
-
 	integer, err := strconv.Atoi(lastNumber)
 	if err != nil {
 		return nil, fmt.Errorf("ParseInteger: %w", err)
@@ -51,7 +50,6 @@ func ParseFloat(value *string) (*float64, error) {
 	}
 
 	lastNumber := matches[0]
-
 	float, err := strconv.ParseFloat(lastNumber, 64)
 	if err != nil {
 		return nil, fmt.Errorf("ParseFloat: %w", err)

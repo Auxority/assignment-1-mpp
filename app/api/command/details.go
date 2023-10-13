@@ -20,11 +20,7 @@ func ShowMovieDetails(id *string) error {
 }
 
 func GetMovieDetails(id *string) (*types.Movie, error) {
-	sql := `
-		SELECT IMDb_id, Title, Rating, Year, Plot_summary
-		FROM movies
-		WHERE IMDb_id = ?;
-	`
+	sql := `SELECT IMDb_id, Title, Rating, Year, Plot_summary FROM movies WHERE IMDb_id = ?;`
 
 	movies, err := database.QueryDatabase(&sql, getMovieFromRow, *id)
 	if err != nil {

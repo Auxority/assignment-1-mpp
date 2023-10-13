@@ -10,7 +10,6 @@ import (
 func ListMovies(writer http.ResponseWriter, request *http.Request) {
 	movies, err := command.GetMovieList()
 	error_util.CheckError(err)
-
 	err = json_util.WriteJSONResponse(writer, movies)
 	error_util.CheckError(err)
 }
